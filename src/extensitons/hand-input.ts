@@ -42,15 +42,17 @@ const inputRule = new InputRule({
 
 const pasteRule = new PasteRule({
   find: /([AKQJT98765432])([shdc])/g,
-  handler: ({ range, commands, match }) => {
+  handler: ({ range, commands, match, state }) => {
     if (!match) return;
 
     const rankLetter = match[1] as Rank;
     const suitLetter = match[2] as Suit;
+    const from = state.selection.from;
     commands.insertContentAt(
       range,
       `${rankMap[rankLetter]}${suitMap[suitLetter]}`
     );
+    commands.setTextSelection(from + 1);
   },
 });
 

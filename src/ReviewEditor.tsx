@@ -9,7 +9,7 @@ import "./ReviewEditor.css";
 
 const extensions = [Document, Text, Paragraph, HandInput, HardBreak];
 
-const content = "<p>Hello World!</p>";
+const content = "<p>ここに入力してね</p>";
 
 const ReviewEditor = () => {
   return (

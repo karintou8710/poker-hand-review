@@ -5,6 +5,7 @@ import { EditorProvider } from "@tiptap/react";
 import { Placeholder, UndoRedo } from "@tiptap/extensions";
 import HandInput from "./extensitons/hand-input";
 import HardBreak from "@tiptap/extension-hard-break";
+import { transformPreLineHTML } from "./extensitons/paste";
 
 import "./ReviewEditor.css";
 
@@ -24,7 +25,16 @@ const content = "";
 
 const ReviewEditor = () => {
   return (
-    <EditorProvider extensions={extensions} content={content}></EditorProvider>
+    <EditorProvider
+      extensions={extensions}
+      content={content}
+      editorProps={{
+        transformPastedHTML: (html) => {
+          html = transformPreLineHTML(html);
+          return html;
+        },
+      }}
+    ></EditorProvider>
   );
 };
 

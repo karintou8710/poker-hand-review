@@ -16,16 +16,9 @@ const ReviewEditor = () => {
     <EditorProvider
       extensions={extensions}
       content={content}
-      editorProps={{
-        transformPastedHTML(html) {
-          // text/htmlでは改行が\nだが、ProseMirrorは認識しないのでHTML改行に変換
-          return html.replaceAll(/\n/g, "<br/>");
-        },
-      }}
-    >
-      {" "}
-    </EditorProvider>
+    ></EditorProvider>
   );
 };
 
 export default ReviewEditor;
+

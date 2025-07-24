@@ -11,6 +11,7 @@
     "deploy": "pnpm run build && wrangler deploy"
   },
   "dependencies": {
+    "@fontsource/noto-sans-jp": "^5.2.6",
     "@tiptap/core": "^3.0.7",
     "@tiptap/extension-document": "^3.0.7",
     "@tiptap/extension-hard-break": "^3.0.7",

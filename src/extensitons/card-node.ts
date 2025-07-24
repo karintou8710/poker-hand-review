@@ -55,6 +55,22 @@ const CardNode = Node.create({
     ];
   },
 
+  renderText({ node }) {
+    const rank = node.attrs.rank;
+    const suit = node.attrs.suit;
+
+    const suitMap: Record<string, string> = {
+      s: "♠",
+      h: "♥",
+      d: "♦",
+      c: "♣",
+    };
+
+    console.log(suitMap[suit] || "", suit);
+
+    return `${rank}${suitMap[suit] || ""}`;
+  },
+
   renderHTML({ HTMLAttributes }) {
     const rank = HTMLAttributes["data-rank"];
     const suit = HTMLAttributes["data-suit"];
@@ -66,6 +82,13 @@ const CardNode = Node.create({
       h: "heart",
       d: "diamond",
       c: "clover",
+    };
+
+    const suitEmojiMap: Record<string, string> = {
+      s: "♠",
+      h: "♥",
+      d: "♦",
+      c: "♣",
     };
 
     return [
@@ -81,6 +104,11 @@ const CardNode = Node.create({
         HTMLAttributes
       ),
       displayText,
+      [
+        "span",
+        { style: "visibility: hidden;font-size: 0;" },
+        suitEmojiMap[suit] || "",
+      ],
     ];
   },
 

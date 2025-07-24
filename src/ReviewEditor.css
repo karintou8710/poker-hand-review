@@ -17,3 +17,45 @@
 .tiptap:focus {
   outline: none;
 }
+
+.card-node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 26px;
+  border-radius: 3px;
+  color: white;
+  font-family: monospace;
+  font-size: 1.3em;
+  font-weight: bold;
+  line-height: 1;
+  border: 3px solid #f9f9f9;
+}
+
+.card-node::after {
+  content: "\200B";
+}
+
+/* Wizardのカード色 */
+.diamond {
+  background-color: #283ac4;
+}
+
+.clover {
+  background-color: #08ab27;
+}
+
+.heart {
+  background-color: #8b0901;
+}
+
+.spade {
+  background-color: #4f4f4f;
+}
+
+img.ProseMirror-separator {
+  display: inline !important;
+  border: none !important;
+  margin: 0 !important;
+}

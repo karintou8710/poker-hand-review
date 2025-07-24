@@ -15,7 +15,7 @@ const extensions = [
   HandInput,
   HardBreak,
   Placeholder.configure({
-    placeholder: "ここにハンドレビューを入力してください。",
+    placeholder: "Please enter your hand review here.",
   }),
   UndoRedo,
 ];

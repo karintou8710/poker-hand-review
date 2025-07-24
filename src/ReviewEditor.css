@@ -1,10 +1,17 @@
 .tiptap {
   padding: 1rem 0.5rem;
-  border: 1px solid black;
 
   p {
     margin: 0;
     padding: 0;
+  }
+
+  p.is-editor-empty:first-child::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
   }
 }
 

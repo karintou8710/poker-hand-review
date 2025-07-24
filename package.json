@@ -17,6 +17,7 @@
     "@tiptap/extension-hard-break": "^3.0.7",
     "@tiptap/extension-paragraph": "^3.0.7",
     "@tiptap/extension-text": "^3.0.7",
+    "@tiptap/extensions": "^3.0.7",
     "@tiptap/pm": "^3.0.7",
     "@tiptap/react": "^3.0.7",
     "react": "^19.1.0",

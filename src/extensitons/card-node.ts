@@ -1,10 +1,43 @@
-import { Node, PasteRule, mergeAttributes } from "@tiptap/core";
-import { InputRule } from "@tiptap/core";
+import { Node, mergeAttributes, InputRule, PasteRule } from "@tiptap/core";
+
+// 定数定義
+const SUIT_CLASS_MAP: Record<string, string> = {
+  s: "spade",
+  h: "heart",
+  d: "diamond",
+  c: "clover",
+};
+
+const SUIT_EMOJI_MAP: Record<string, string> = {
+  s: "♠",
+  h: "♥",
+  d: "♦",
+  c: "♣",
+};
+
+const CARD_REGEX = /([AKQJT98765432])([shdc])/;
+
+// 型定義
+type Rank =
+  | "A"
+  | "K"
+  | "Q"
+  | "J"
+  | "T"
+  | "9"
+  | "8"
+  | "7"
+  | "6"
+  | "5"
+  | "4"
+  | "3"
+  | "2";
+type Suit = "s" | "h" | "d" | "c";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     card: {
-      insertCard: (rank: string, suit: string) => ReturnType;
+      insertCard: (rank: Rank, suit: Suit) => ReturnType;
     };
   }
 }
@@ -56,40 +89,12 @@ const CardNode = Node.create({
   },
 
   renderText({ node }) {
-    const rank = node.attrs.rank;
-    const suit = node.attrs.suit;
-
-    const suitMap: Record<string, string> = {
-      s: "♠",
-      h: "♥",
-      d: "♦",
-      c: "♣",
-    };
-
-    console.log(suitMap[suit] || "", suit);
-
-    return `${rank}${suitMap[suit] || ""}`;
+    const { rank, suit } = node.attrs;
+    return `${rank}${SUIT_EMOJI_MAP[suit] || ""}`;
   },
 
   renderHTML({ HTMLAttributes }) {
-    const rank = HTMLAttributes["data-rank"];
-    const suit = HTMLAttributes["data-suit"];
-
-    const displayText = `${rank}`;
-
-    const suitClassMap: Record<string, string> = {
-      s: "spade",
-      h: "heart",
-      d: "diamond",
-      c: "clover",
-    };
-
-    const suitEmojiMap: Record<string, string> = {
-      s: "♠",
-      h: "♥",
-      d: "♦",
-      c: "♣",
-    };
+    const { "data-rank": rank, "data-suit": suit } = HTMLAttributes;
 
     return [
       "span",
@@ -98,16 +103,16 @@ const CardNode = Node.create({
           "data-card": "",
           "data-rank": rank,
           "data-suit": suit,
-          class: `card-node ${suitClassMap[suit] || ""}`,
+          class: `card-node ${SUIT_CLASS_MAP[suit] || ""}`,
         },
         this.options.HTMLAttributes,
         HTMLAttributes
       ),
-      displayText,
+      rank,
       [
         "span",
-        { style: "visibility: hidden;font-size: 0;" },
-        suitEmojiMap[suit] || "",
+        { style: "visibility: hidden; font-size: 0;" },
+        SUIT_EMOJI_MAP[suit] || "",
       ],
     ];
   },
@@ -115,14 +120,11 @@ const CardNode = Node.create({
   addCommands() {
     return {
       insertCard:
-        (rank: string, suit: string) =>
+        (rank: Rank, suit: Suit) =>
         ({ commands }) => {
           return commands.insertContent({
             type: this.name,
-            attrs: {
-              rank,
-              suit,
-            },
+            attrs: { rank, suit },
           });
         },
     };
@@ -131,18 +133,14 @@ const CardNode = Node.create({
   addInputRules() {
     return [
       new InputRule({
-        find: /([AKQJT98765432])([shdc])$/,
+        find: new RegExp(`${CARD_REGEX.source}$`),
         handler: ({ range, commands, match }) => {
           if (!match) return;
 
-          const [, rank, suit] = match;
-
+          const [, rank, suit] = match as [string, Rank, Suit];
           commands.insertContentAt(range, {
             type: this.name,
-            attrs: {
-              rank,
-              suit,
-            },
+            attrs: { rank, suit },
           });
         },
       }),
@@ -152,18 +150,14 @@ const CardNode = Node.create({
   addPasteRules() {
     return [
       new PasteRule({
-        find: /([AKQJT98765432])([shdc])/g,
+        find: new RegExp(CARD_REGEX.source, "g"),
         handler: ({ range, commands, match }) => {
           if (!match) return;
 
-          const [, rank, suit] = match;
-
+          const [, rank, suit] = match as [string, Rank, Suit];
           commands.insertContentAt(range, {
             type: this.name,
-            attrs: {
-              rank,
-              suit,
-            },
+            attrs: { rank, suit },
           });
         },
       }),

@@ -1,11 +1,16 @@
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
-import { EditorProvider } from "@tiptap/react";
+import { EditorContent, useEditor } from "@tiptap/react";
 import { Placeholder, UndoRedo } from "@tiptap/extensions";
 import CardNode from "./extensitons/card-node";
 import HardBreak from "@tiptap/extension-hard-break";
 import { transformPreLineHTML } from "./extensitons/paste";
+import {
+  REVIEW_CONTENT_KEY,
+  useSyncLocalStorage,
+} from "./hooks/useSyncLocalStorage";
+import { useEffect } from "react";
 
 import "./ReviewEditor.css";
 
@@ -21,21 +26,31 @@ const extensions = [
   UndoRedo,
 ];
 
-const content = "";
-
 const ReviewEditor = () => {
-  return (
-    <EditorProvider
-      extensions={extensions}
-      content={content}
-      editorProps={{
-        transformPastedHTML: (html) => {
-          html = transformPreLineHTML(html);
-          return html;
-        },
-      }}
-    ></EditorProvider>
-  );
+  const [content, setContent] = useSyncLocalStorage(REVIEW_CONTENT_KEY, "");
+
+  const editor = useEditor({
+    extensions,
+    content,
+    editorProps: {
+      transformPastedHTML: (html: string) => {
+        return transformPreLineHTML(html);
+      },
+    },
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      setContent(html);
+    },
+  });
+
+  // contentが変更された時にエディターを更新
+  useEffect(() => {
+    if (editor && editor.getHTML() !== content) {
+      editor.commands.setContent(content, { emitUpdate: false });
+    }
+  }, [editor, content]);
+
+  return <EditorContent editor={editor} />;
 };
 
 export default ReviewEditor;

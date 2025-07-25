@@ -3,6 +3,7 @@
   border: 1px solid #eee;
   border-radius: 0.375rem;
   background-color: #f9f9f9;
+  margin-bottom: 10rem;
 
   p.is-editor-empty:first-child::before {
     color: #adb5bd;

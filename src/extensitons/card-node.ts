@@ -1,22 +1,5 @@
 import { Node, mergeAttributes, InputRule, PasteRule } from "@tiptap/core";
 
-// 定数定義
-const SUIT_CLASS_MAP: Record<string, string> = {
-  s: "spade",
-  h: "heart",
-  d: "diamond",
-  c: "clover",
-};
-
-const SUIT_EMOJI_MAP: Record<string, string> = {
-  s: "♠",
-  h: "♥",
-  d: "♦",
-  c: "♣",
-};
-
-const CARD_REGEX = /([AKQJT98765432])([shdc])/;
-
 // 型定義
 type Rank =
   | "A"
@@ -33,6 +16,8 @@ type Rank =
   | "3"
   | "2";
 type Suit = "s" | "h" | "d" | "c";
+type SuitEmoji = "♠" | "♥" | "♦" | "♣";
+type SuitOrEmoji = Suit | SuitEmoji;
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -41,6 +26,34 @@ declare module "@tiptap/core" {
     };
   }
 }
+
+// 定数定義
+const SUIT_CLASS_MAP: Record<Suit, string> = {
+  s: "spade",
+  h: "heart",
+  d: "diamond",
+  c: "clover",
+};
+
+const SUIT_EMOJI_MAP: Record<Suit, SuitEmoji> = {
+  s: "♠",
+  h: "♥",
+  d: "♦",
+  c: "♣",
+};
+
+const REGEXP_TO_SUIT_MAP: Record<SuitOrEmoji, Suit> = {
+  "♠": "s",
+  "♥": "h",
+  "♦": "d",
+  "♣": "c",
+  s: "s",
+  h: "h",
+  d: "d",
+  c: "c",
+};
+
+const CARD_REGEX = /([AKQJT98765432])([shdc♠♥♦♣])/;
 
 const CardNode = Node.create({
   name: "card",
@@ -89,12 +102,15 @@ const CardNode = Node.create({
   },
 
   renderText({ node }) {
-    const { rank, suit } = node.attrs;
+    const { rank, suit } = node.attrs as { rank: Rank; suit: Suit };
     return `${rank}${SUIT_EMOJI_MAP[suit] || ""}`;
   },
 
   renderHTML({ HTMLAttributes }) {
-    const { "data-rank": rank, "data-suit": suit } = HTMLAttributes;
+    const { "data-rank": rank, "data-suit": suit } = HTMLAttributes as {
+      "data-rank": Rank;
+      "data-suit": Suit;
+    };
 
     return [
       "span",
@@ -137,7 +153,9 @@ const CardNode = Node.create({
         handler: ({ range, commands, match }) => {
           if (!match) return;
 
-          const [, rank, suit] = match as [string, Rank, Suit];
+          const [, rank, suitOrEmoji] = match as [string, Rank, SuitOrEmoji];
+          const suit = REGEXP_TO_SUIT_MAP[suitOrEmoji];
+
           commands.insertContentAt(range, {
             type: this.name,
             attrs: { rank, suit },
@@ -154,7 +172,9 @@ const CardNode = Node.create({
         handler: ({ range, commands, match }) => {
           if (!match) return;
 
-          const [, rank, suit] = match as [string, Rank, Suit];
+          const [, rank, suitOrEmoji] = match as [string, Rank, SuitOrEmoji];
+          const suit = REGEXP_TO_SUIT_MAP[suitOrEmoji];
+
           commands.insertContentAt(range, {
             type: this.name,
             attrs: { rank, suit },

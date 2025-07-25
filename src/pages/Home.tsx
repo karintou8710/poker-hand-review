@@ -1,6 +1,6 @@
-import ReviewEditor from "./ReviewEditor";
+import ReviewEditor from "../features/reviewEditor/ReviewEditor";
 
-function App() {
+function Home() {
   return (
     <div>
       <main className="max-w-3xl mx-auto mt-6 md:mt-12">
@@ -19,4 +19,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;

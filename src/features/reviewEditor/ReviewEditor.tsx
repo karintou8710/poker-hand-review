@@ -9,7 +9,7 @@ import { transformPreLineHTML } from "./extensitons/paste";
 import {
   REVIEW_CONTENT_KEY,
   useSyncLocalStorage,
-} from "./hooks/useSyncLocalStorage";
+} from "../../shares/hooks/useSyncLocalStorage";
 import { useEffect } from "react";
 
 import "./ReviewEditor.css";
@@ -38,8 +38,7 @@ const ReviewEditor = () => {
       },
     },
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      setContent(html);
+      setContent(editor.getHTML());
     },
   });
 
